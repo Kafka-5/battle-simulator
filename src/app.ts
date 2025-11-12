@@ -26,14 +26,14 @@ function normalizeAction(input: string): Action["action"] | null {
 
 async function main() {
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-  console.log("🎮 Welcome to the Turn-Based Battle Simulator!\n");
+  console.log(" Welcome to the Turn-Based Battle Simulator!\n");
 
   // === Player A setup ===
   let aType: FighterType | null = null;
   while (!aType) {
     const t = await ask("Player A: Choose fighter type (wizard/w, warrior/r, knight/k): ", rl);
     aType = normalizeType(t);
-    if (!aType) console.log("❌ Invalid type. Try again.");
+    if (!aType) console.log(" Invalid type. Try again.");
   }
   const aName = await ask("Player A: Enter display name (or press Enter for default): ", rl);
   const fighterA = createFighter("A", aType, aName);
@@ -43,7 +43,7 @@ async function main() {
   while (!bType) {
     const t = await ask("Player B: Choose fighter type (wizard/w, warrior/r, knight/k): ", rl);
     bType = normalizeType(t);
-    if (!bType) console.log("❌ Invalid type. Try again.");
+    if (!bType) console.log(" Invalid type. Try again.");
   }
   const bName = await ask("Player B: Enter display name (or press Enter for default): ", rl);
   const fighterB = createFighter("B", bType, bName);
@@ -55,7 +55,7 @@ async function main() {
   // toss to decide who goes first
   let attacker = Math.random() < 0.5 ? fighterA : fighterB;
   let defender = attacker === fighterA ? fighterB : fighterA;
-  console.log(`🪙 Toss Result: ${attacker.name} (${attacker.id}) goes first!\n`);
+  console.log(` Toss Result: ${attacker.name} (${attacker.id}) goes first!\n`);
 
   const arena = new BattleArena(fighterA, fighterB);
   let rounds = 0;
@@ -69,17 +69,17 @@ async function main() {
     while (!chosen) {
       const ans = await ask(`${attacker.name} (${attacker.id}) — choose action (attack/a, heal/h): `, rl);
       chosen = normalizeAction(ans);
-      if (!chosen) console.log("❌ Invalid action. Enter 'attack' or 'heal'.");
+      if (!chosen) console.log(" Invalid action. Enter 'attack' or 'heal'.");
     }
 
     const action = await arena.takeTurn(attacker, defender, chosen);
 
     if (action.action === "attack") {
-      console.log(`⚔️ ${attacker.name} attacked ${defender.name} for ${action.amount} damage!`);
-      console.log(`❤️ ${defender.name} HP is now ${defender.hp}\n`);
+      console.log(` ${attacker.name} attacked ${defender.name} for ${action.amount} damage!`);
+      console.log(` ${defender.name} HP is now ${defender.hp}\n`);
     } else {
-      console.log(`✨ ${attacker.name} healed for ${action.amount}.`);
-      console.log(`❤️ ${attacker.name} HP is now ${attacker.hp}\n`);
+      console.log(` ${attacker.name} healed for ${action.amount}.`);
+      console.log(` ${attacker.name} HP is now ${attacker.hp}\n`);
     }
 
     if (arena.isOver()) break;
@@ -88,8 +88,8 @@ async function main() {
 
   // === Result ===
   const { winner } = arena.getWinnerLoser();
-  console.log(`\n🏁 Battle Over!`);
-  console.log(`🏆 Winner: ${winner ? winner.name : "No one (Draw)"}\n`);
+  console.log(`\n Battle Over!`);
+  console.log(` Winner: ${winner ? winner.name : "No one (Draw)"}\n`);
 
   console.table(
     arena.getLog().map((a, i) => ({
